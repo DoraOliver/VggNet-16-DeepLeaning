@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class VGG(nn.Modele):
+    #num_classes:定义最后的分类数量
     def __init__(self, features, num_classes: int = 1000, init_weights=False):
         super().__init__()
         self.features = features
