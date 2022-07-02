@@ -1,1 +1,1 @@
-# VggNet-16-DeepLeaning
+# VggNet-DeepLeaning
