@@ -7,6 +7,7 @@ import torchvision.transforms as transforms
 from torchvision import datasets
 import numpy as np
 from torch.utils.data import DataLoader
+from torch.optim.lr_scheduler import StepLR
 
 import sys
 from tqdm import tqdm
@@ -69,7 +70,9 @@ def main():
         vgg_net.to(device)
         loss_function = nn.CrossEntropyLoss()
         #optimizer = optim.Adam(vgg_net.parameters(), lr=0.0001)
-        optimizer = optim.SGD(vgg_net.parameters(), lr=0.001, momentum=0.9, weight_decay =le-40)
+        optimizer = optim.SGD(vgg_net.parameters(), lr=0.001, momentum=0.9, weight_decay =1e-4)
+        #学习率更新策略
+        scheduler = StepLR(optimizer, step_size=30, gamma=0.1)
 
         epochs = 30
         best_ac = 0.0
@@ -90,7 +93,9 @@ def main():
 
                         running_loss += loss.item()
 
-                        train_bar.desc = "train epoch[{}/{}] loss:{:/3f}".format(epoch +1, epochs, loss)
+                        train_bar.desc = "train epoch[{}/{}] loss:{:.3f}".format(epoch +1,
+                                                                                 epochs, 
+                                                                                 loss)
 
                 vgg_net.eval()
                 acc = 0.0
@@ -106,7 +111,7 @@ def main():
 
                 if test_acc > best_ac:
                         best_ac = test_acc
-                        torch.save(vgg_net.stat_dict(), save_path)
+                        torch.save(vgg_net.state_dict(), save_path)
 
         print('FInished Traning')
 
