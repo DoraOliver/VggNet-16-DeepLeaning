@@ -5,13 +5,14 @@ import torch.nn.functional as F
 
 class VGG(nn.Module):
     #num_classes:定义最后的分类数量
-    def __init__(self, features, num_classes: int = 1000, init_weights=False):
+    def __init__(self, features, num_classes: int = 1000, init_weights=True):
         super().__init__()
         self.features = features
         #nn.Sequential定义最后三层全连接层：分类层
         self.classfier = nn.Sequential(
             #Conv.512*7*7 --> FC.4096
-            nn.Linear(512*7*7, 4096),
+            #nn.Linear(512*7*7, 4096),
+            nn.Linear(512*1*1, 4096),#CIFAR32*32出来的1*1
             nn.ReLU(True),
             nn.Dropout(p=0.5),
             nn.Linear(4096, 4096),
@@ -30,7 +31,7 @@ class VGG(nn.Module):
         #输出展评，后面的参数为batch维度转换的起始位置
         pic_info = torch.flatten(pic_info, 1)
         #输入到分类网络结构
-        pic_info = self.classifier(pic_info)
+        pic_info = self.classfier(pic_info)
         return(pic_info)
 
     def init_weights(self):
@@ -72,3 +73,7 @@ def build_vgg(model_name, **rest):
     cfg = cfgs[model_name]
     model = VGG(make_layers_features(cfg))
     return model
+
+
+
+ 

@@ -68,7 +68,8 @@ def main():
         vgg_net = build_vgg(model_name=model_name, num_classes = 10)
         vgg_net.to(device)
         loss_function = nn.CrossEntropyLoss()
-        optimizer = optim.Adam(vgg_net.parameters(), lr=0.0001)
+        #optimizer = optim.Adam(vgg_net.parameters(), lr=0.0001)
+        optimizer = optim.SGD(vgg_net.parameters(), lr=0.001, momentum=0.9, weight_decay =le-40)
 
         epochs = 30
         best_ac = 0.0
@@ -105,7 +106,7 @@ def main():
 
                 if test_acc > best_ac:
                         best_ac = test_acc
-                        torch.save(net.stat_dict(), save_path)
+                        torch.save(vgg_net.stat_dict(), save_path)
 
         print('FInished Traning')
 
